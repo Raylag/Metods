@@ -1,0 +1,82 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <iomanip>
+#include <fstream>
+
+using namespace std;
+
+void jacobi(const vector<vector<double>>& A, const vector<double>& b, vector<double>& x, int max_iterations, double tolerance) {
+    int n = A.size();
+    vector<double> x_new(n);
+    vector<double> residuals; 
+
+    for (int it = 0; it < max_iterations; ++it) {
+        for (int i = 0; i < n; ++i) {
+            double sum = 0.0;
+            for (int j = 0; j < n; ++j) {
+                if (i != j) {
+                    sum += A[i][j] * x[j];
+                }
+            }
+            x_new[i] = (b[i] - sum) / A[i][i];
+        }
+
+        double max_diff = 0.0;
+        for (int i = 0; i < n; ++i) {
+            max_diff = max(max_diff, fabs(x_new[i] - x[i]));
+        }
+
+        double norm_residual = 0.0;
+        for (int i = 0; i < n; ++i) {
+            double residual = b[i];
+            for (int j = 0; j < n; ++j) {
+                residual -= A[i][j] * x_new[j];
+            }
+            norm_residual += residual * residual;
+        }
+        norm_residual = sqrt(norm_residual);
+        residuals.push_back(norm_residual); 
+
+        x = x_new;
+
+        if (max_diff < tolerance) {
+            cout << "Converged after " << it + 1 << " iterations." << endl;
+            break;
+        }
+    }
+
+
+    ofstream file("residuals.txt");
+    for (size_t i = 0; i < residuals.size(); ++i) {
+        file << i + 1 << " " << residuals[i] << endl;
+    }
+    file.close();
+}
+
+int main() {
+
+    vector<vector<double>> A = {
+       {12.14, 1.32, -0.78, -2.75},
+       {-0.89, 16.57, 1.88, -1.55},
+       {2.65, -1.27, 15.64, 0.64},
+       {2.44, 1.52, 1.93, -11.43}
+    };
+
+    vector<double> b = { 14.78, -12.14, -11.65, 4.26 };
+
+    int n = A.size();
+    vector<double> x(n, 0.0); 
+
+    int max_iterations = 100; 
+    double tolerance = 1e-6; 
+
+    jacobi(A, b, x, max_iterations, tolerance);
+
+    cout << "Solution:" << endl;
+    for (double xi : x) {
+        cout << fixed << setprecision(6) << xi << endl;
+    }
+
+    return 0;
+}
