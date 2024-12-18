@@ -1,0 +1,174 @@
+//1 
+/*
+#include <iostream> 
+#include <cmath> 
+#include <iomanip> // формат вывода 
+#define M_PI 3.14159265358979323846 
+using namespace std;
+
+double erf(double x) throw(overflow_error, underflow_error) { //было переопределение, может выбросить исключения 
+	const int MAX_ITERATIONS = 100; // макс кол-во итераций 
+	long double sum = 0.0L; // сумма 
+	long double term = 1.0L; // текущий член ряда. long double 
+
+	for (int n = 0; n < MAX_ITERATIONS; ++n) {
+		long long factorial_n = 1LL;
+		for (int i = 1; i <= n; ++i) {
+			factorial_n *= i; // факториал для каждого члена ряда 
+		}
+
+		term = powl(x / sqrtl(2.0L), 2 * n + 1) / (factorial_n * (2 * n + 1));
+
+		if (abs(term) < numeric_limits<long double>::epsilon()) {
+			break; // проверка достижения точности, прерываем 
+		}
+		sum += term; // добавляем текущий член к сумме 
+	}
+	return sum;
+}
+
+int main() {
+	setlocale(LC_ALL, "RUS");
+	long double x_values[] = { 0.5L, 1.0L, 5.0L, 10.0L }; // массив значений 
+	const int num_x_values = sizeof(x_values) / sizeof(x_values[0]); // кол-во элементов 
+
+	for (int i = 0; i < num_x_values; ++i) {
+		long double x = x_values[i];
+		long double calculated_erf = erf(x);
+		long double reference_erf = erfc(x); // Используем erfc из cmath для сравнения 
+
+		cout << setprecision(20) << "x = " << x << ", Высчитанный erf: " << calculated_erf << endl; // точность до 20 знаков 
+		cout << "Табличный erf: " << reference_erf << endl;
+		cout << "Разница: " << abs(calculated_erf - reference_erf) << endl;
+		cout << "---" << endl;
+	}
+	return 0;
+}
+
+*/
+
+
+
+
+//2 
+/*
+#include <iostream>
+#include <cmath>
+#include <iomanip>
+
+using namespace std;
+
+// Функция для вычисления суммы ряда для заданного х
+double phi(double x, int max_iter = 1000000) {
+ double sum = 0.0;
+ for (int k = 1; k <= max_iter; k++) {
+ sum += 1.0 / (k * (k + x));
+ }
+ return sum;
+}
+
+
+// Функция для вычисления разности ϕ(x) - ϕ(1)
+double diff_series(double x, int max_iter = 1000000) {
+ double sum = 0.0; // Инициализация суммы разности ряда
+ for (int k = 1; k <= max_iter; k++) {
+ sum += 1.0 / (k * (k + x)) - 1.0 / (k * (k + 1));
+ }
+ return sum;
+}
+
+int main() {
+ setlocale(LC_ALL, "RUS");
+ const double error_threshold = 0.5e-8; // Пороговое значение ошибки
+ const double start_x = 0.0; // Начальное значение x
+ const double end_x = 1.0; // Конечное значение x
+ const double step = 0.1; // Шаг между значениями x
+
+ cout << fixed << setprecision(12); // Форматирование вывода чисел с фиксированной точностью в 12 знаках после запятой
+
+ for (double x = start_x; x <= end_x; x += step) {
+ double series_sum = phi(x); // Вычисление суммы ряда для текущего x
+ double diff_sum = diff_series(x); // Вычисление разности ряда для текущего x
+
+ double relative_error = abs(series_sum - diff_sum) / abs(diff_sum); // Вычисление относительной ошибки
+
+ cout << "x = " << x << ", сумма: " << series_sum << ", разность: " << diff_sum << endl;
+ }
+ return 0;
+}
+*/
+
+
+//3 
+/*
+#include <iostream>
+#include <cmath>
+#define M_PI 3.14159265358979323846
+using namespace std;
+
+double f(double x, double tochnost = 3e-8) {
+ double oneslag = 1 / sqrt(1 + x) - 1 / sqrt(1 - x);
+ int k = 2;
+ double sum = 0;
+ while (fabs(oneslag) > tochnost) {
+ sum += oneslag;
+ oneslag = 1 / sqrt(pow(k,3) + x) - 1 / sqrt(pow(k, 3) - x);
+ k++;
+ }
+ return sum;
+}
+double f1(double x, double tochnost = 3e-8) {
+ double oneslag = 1 / sqrt(1 + x) - 1 / sqrt(1 - x);
+ int k = 2;
+ double sum = 0;
+ while (fabs(oneslag) > tochnost) {
+ sum += oneslag;
+ oneslag = 1 / sqrt(pow(k, 3) + x) - 1 / sqrt(pow(k, 3) - x);
+ k++;
+ }
+ return k;
+}
+int main() {
+ setlocale(LC_ALL, "RUS");
+ for (double x = 0; x < 1; x += 0.1) {
+ double F = f(x);
+ cout << "x: " << x << ", F(x) = " << F << ", k = " << f1(x) << ", time = " << f1(x)*500 << "ms" << endl;
+ }
+ cout << "x: " << 0.5 << ", F(x) = " << f(0.5) << endl;
+ cout << "x: " << 0.999999999 << ", F(x) = " << f(0.999999999) << endl;
+ return 0;
+}
+*/
+
+
+//4 
+
+#include <iostream>
+#include <cmath>
+#define M_PI 3.14159265358979323846
+using namespace std;
+
+int main() {
+ setlocale(LC_ALL, "RUS");
+ double oneslag = 0.5;
+ double k = 2;
+ double sum = 0;
+ while (fabs(oneslag) > 1e-10) {
+ sum += oneslag;
+ oneslag = 1 / (pow(k, 2) + 1);
+ k++;
+ }
+
+  oneslag = pow(M_PI, 2) / 6 - pow(M_PI, 4) / 90 + 0.5;
+  k = 2;
+ double sum1 = 0;
+ while (fabs(oneslag) > 1e-10) {
+ sum1 += oneslag;
+ oneslag = 1 / (pow(k, 4) * (k * k + 1));
+ k++;
+ }
+ cout << "F(x) = " << sum << endl;
+ cout << "F1(x) = " << sum1 << endl;
+
+ return 0;
+}
