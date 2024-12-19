@@ -1,0 +1,30 @@
+<html lang="ru">
+<form action = "/cgi-bin/form.py">
+    Style <input type = "text" name = "Style" >
+    Materials <input type = "text" name = "Materials" >
+    Price <input type="text" name="Price">
+    <input type = "submit" >  
+    </br>
+    </br>
+    </br>
+    <input type = "submit" name = "Export" value= "Export" > 
+    <input type = "submit" name = "Import" value= "Import" > 
+
+
+<h2>Viewing the contents of tables</h2>
+    <form action="/cgi-bin/form.py" method="post">
+        <input type="submit" value="Viewing the contents of tables">
+    </form>
+
+<h2>Database management</h2>
+    <form action="/cgi-bin/Upload.py" method="post" enctype="multipart/form-data">
+        <label for="xml_file">Download the database from XML:</label><br>
+        <input type="file" id="xml_file" name="xml_file" accept=".xml" required><br><br>
+        <input type="submit" value="Download">
+    </form>
+
+    <form action="/cgi-bin/Download.py" method="get">
+        <input type="submit" value="Download the XML file of the current state of the database">
+    </form>
+
+</form>
